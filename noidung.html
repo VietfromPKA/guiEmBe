@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lời yêu thương</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .love-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .love-message {
+            position: absolute;
+            color: #ffffff;
+            font-size: 24px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            animation: fallDown 8s linear forwards;
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+        }
+
+        .falling-image {
+            position: absolute;
+            opacity: 0;
+            animation: fallDown 10s linear forwards;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fallDown {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(calc(100vh + 50px));
+                opacity: 0;
+            }
+        }
+
+        .heart-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.7;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+         @media screen and (max-width: 768px) {
+            .love-message {
+                font-size: 18px;
+                padding: 8px;
+                white-space: normal;
+                max-width: 80%;
+            }
+
+            .falling-image {
+                max-width: 70%;
+                height: auto;
+            }
+            .floating-heart {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .love-message {
+                font-size: 16px;
+                max-width: 90%;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="heart-bg" id="heartBg"></div>
+    <div class="love-container" id="loveContainer"></div>
+
+    <script>
+        // Danh sách các lời nhắn yêu thương
+        const loveMessages = [
+            "Em là điều tuyệt vời nhất trong cuộc đời anh ❤️",
+            "Mỗi ngày bên em là một ngày hạnh phúc",
+            "Anh yêu em nhiều hơn những vì sao trên bầu trời",
+            "Em là lý do anh mỉm cười mỗi ngày",
+            "Tình yêu của anh dành cho em sẽ không bao giờ phai nhạt",
+            "Mãi mãi là của nhau em nhé",
+            "Em là nguồn cảm hứng cho mọi điều anh làm",
+            "Anh nhớ em từng phút từng giây",
+            "Yêu em đến tận cùng vũ trụ và quay trở lại",
+            "Trái tim anh luôn thuộc về em",
+            "Cảm ơn em đã đến bên đời anh",
+            "Bên em, anh thấy mình là người hạnh phúc nhất",
+            "Yêu em là điều tuyệt vời nhất anh từng làm",
+            "Em là định mệnh của đời anh",
+            "Anh sẽ yêu em mãi mãi không thay đổi",
+            "Em là ánh nắng trong ngày mưa của anh",
+            "Yêu em nhiều hơn cả những gì anh có thể diễn tả",
+            "Mỗi khoảnh khắc bên em đều là kỷ niệm đẹp",
+            "Anh biết ơn vì được yêu em mỗi ngày",
+            "Em là giấc mơ đẹp nhất của anh",
+            "Anh sẽ nắm tay em đi hết cuộc đời này",
+            "Yêu em không phải lựa chọn, mà là định mệnh",
+            "Trái tim anh nhảy nhót mỗi khi thấy em cười",
+            "Em là điều tuyệt vời nhất trong mọi vũ trụ",
+            "Anh yêu tất cả những gì thuộc về em"
+        ];
+        
+        // Danh sách URL hình ảnh (thêm URL hình ảnh của bạn vào đây)
+        const imageUrls = [
+            './img/a1.jpg',
+            './img/a2.jpg',
+            './img/a3.jpg',
+            './img/a4.jpg',
+            './img/a5.jpg',
+            './img/a6.jpg',
+            './img/a7.jpg',
+            './img/a8.jpg',
+            './img/a9.jpg',
+            './img/a10.jpg',
+            './img/a11.jpg',
+            // Thêm các URL hình ảnh khác nếu có
+        ];
+
+        // Tạo các thông điệp rơi
+        function createFallingMessages() {
+            const container = document.getElementById('loveContainer');
+            
+            // Tạo và thả từng tin nhắn
+            loveMessages.forEach((message, index) => {
+                setTimeout(() => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'love-message';
+                    messageElement.innerText = message;
+                    
+                    // Vị trí ngẫu nhiên theo chiều ngang
+                    const xPos = Math.random() * 80; // % màn hình
+                    messageElement.style.left = xPos + '%';
+                    
+                    // Tốc độ ngẫu nhiên
+                    const duration = 5 + Math.random() * 5; // 5-10s
+                    messageElement.style.animationDuration = duration + 's';
+                    
+                    container.appendChild(messageElement);
+                    
+                    // Xóa phần tử sau khi hoàn thành animation
+                    setTimeout(() => {
+                        messageElement.remove();
+                    }, duration * 1000);
+                    
+                }, index * 1500); // Thời gian giữa các tin nhắn
+            });
+            
+            // Lặp lại sau khi hoàn thành
+            setTimeout(createFallingMessages, loveMessages.length * 1500);
+        }
+        
+        // Tạo các hình ảnh rơi
+        function createFallingImages() {
+            const container = document.getElementById('loveContainer');
+            
+            setInterval(() => {
+                if (imageUrls.length > 0) {
+                    const imageElement = document.createElement('img');
+                    imageElement.className = 'falling-image';
+                    
+                    // Chọn hình ảnh ngẫu nhiên
+                    const randomImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+                    imageElement.src = randomImageUrl;
+                    
+                    // Kích thước ngẫu nhiên
+                    const size = 60 + Math.random() * 40; // 60-100px
+                    imageElement.style.width = size + 'px';
+                    imageElement.style.height = 'auto';
+                    
+                    // Vị trí ngẫu nhiên theo chiều ngang
+                    const xPos = Math.random() * 90; // % màn hình
+                    imageElement.style.left = xPos + '%';
+                    
+                    // Tốc độ ngẫu nhiên
+                    const duration = 6 + Math.random() * 6; // 6-12s
+                    imageElement.style.animationDuration = duration + 's';
+                    
+                    container.appendChild(imageElement);
+                    
+                    // Xóa phần tử sau khi hoàn thành animation
+                    setTimeout(() => {
+                        imageElement.remove();
+                    }, duration * 1000);
+                }
+            }, 2000); // Tạo hình ảnh mới mỗi 2 giây
+        }
+
+        // Tạo trái tim nổi
+        function createFloatingHearts() {
+            const heartBg = document.getElementById('heartBg');
+            
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                
+                // Vị trí ngẫu nhiên
+                const xPos = Math.random() * 100; // % màn hình
+                const yPos = Math.random() * 100; // % màn hình
+                
+                heart.style.left = xPos + '%';
+                heart.style.bottom = yPos + '%';
+                
+                // Kích thước ngẫu nhiên
+                const size = 15 + Math.random() * 15; // 15-30px
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+                
+                // Tốc độ và độ trễ ngẫu nhiên
+                const duration = 5 + Math.random() * 10; // 5-15s
+                heart.style.animationDuration = duration + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                
+                heartBg.appendChild(heart);
+            }
+        }
+
+        // Khởi chạy các hiệu ứng
+        window.onload = function() {
+            createFallingMessages();
+            createFloatingHearts();
+            createFallingImages();
+        };
+    </script>
+</body>
+</html>
